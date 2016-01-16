@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Guestbook</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+        <script>
+        function goBack() {
+            window.history.back();
+        }
+        </script>
+</head>
+<body>
+        Sporočilo osebe {{vnos.ime}} se glasi: <br>
+        {{vnos.sporocilo}} <br>
+
+       {% if vnos.email %} E-poštni naslov te osebe je: {{vnos.email}} {% endif %} <br>
+
+        Čas nastanka:
+        {% if vnos.datum_komentarja%}{{vnos.datum_komentarja}} {% endif %}<br>
+        <br>
+        <button onclick="goBack()">Pojdi nazaj</button>
+</form>
+</body>
+</html>
