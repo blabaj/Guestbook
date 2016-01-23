@@ -20,6 +20,9 @@
 
         Čas nastanka:
         {% if vnos.datum_komentarja%}{{vnos.datum_komentarja}} {% endif %}<br>
+
+        <a href="/vnos/uredi/{{vnos.key.id()}}"> Uredi </a>
+        <a href="/vnos/brisi/{{vnos.key.id()}}"> Brisi </a>
         <br>
         <button onclick="goBack()">Pojdi nazaj</button>
 </form>

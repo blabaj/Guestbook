@@ -3,6 +3,7 @@ import os
 import jinja2
 import webapp2
 from models import Guestbook
+import time
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -54,10 +55,37 @@ class VnosHandler(BaseHandler):
         params = {"vnos":vnos}
         return self.render_template("vnos.html", params)
 
+class UrediHandler(BaseHandler):
+    def get(self, vnos_id):
+        vnos = Guestbook.get_by_id(int(vnos_id))
+        params = {"vnos":vnos}
+        return self.render_template("uredi.html", params)
+    def post(self, vnos_id):
+        vnos = Guestbook.get_by_id(int(vnos_id))
+        vrednost_vnosa = self.request.get("sporocilo")
+        vnos.sporocilo = vrednost_vnosa
+        vnos.put()
+        time.sleep(0.1)
+        return self.redirect_to("seznam-vnosov")
+
+class BrisiHandler(BaseHandler):
+    def get(self, vnos_id):
+
+        vnos = Guestbook.get_by_id(int(vnos_id))
+        params = {"vnos":vnos}
+        return self.render_template("brisi.html", params)
+    def post(self, vnos_id):
+        vnos = Guestbook.get_by_id(int(vnos_id))
+        vnos.key.delete()
+        time.sleep(0.1)
+        return self.redirect_to("seznam-vnosov")
+
 
 
 
 app = webapp2.WSGIApplication([
-    webapp2.Route('/', MainHandler),
+    webapp2.Route('/', MainHandler, name = "seznam-vnosov"),
     webapp2.Route('/vnos/<vnos_id:\d+>', VnosHandler),
+    webapp2.Route('/vnos/uredi/<vnos_id:\d+>', UrediHandler),
+    webapp2.Route('/vnos/brisi/<vnos_id:\d+>', BrisiHandler),
 ], debug=True)
