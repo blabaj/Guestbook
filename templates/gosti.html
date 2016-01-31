@@ -15,9 +15,9 @@
 <body>
         <form method="post" action="/" id="forma">
           Guestbook:<br>
-         Ime in priimek (neobvezno): <input type="text" name="ime"><br>
-         Email (nebvezno): <input type="text" name="email"><br>
-         Sporocilo (obvezno): <textarea name="sporocilo" form="forma" rows="4" cols="50"> </textarea>
+            {% if logiran %}
+             <a href="{{logout_url}}"> LOGOUT</a> <br>
+            Sporocilo (obvezno): <textarea name="sporocilo" form="forma" rows="4" cols="50"> </textarea>
             <br>
             <input  type="submit" value="Submit" >
             <br>
@@ -29,6 +29,11 @@
                  <a href="/vnos/{{vnos.key.id()}}">{{vnos.ime}}</a> <br>
                 {% endfor %}
             {% endif %}
+            {% else %}
+                <a href="{{login_url}}"> LOGIN</a>
+            {% endif %}
+         <!--Ime in priimek (neobvezno): <input type="text" name="ime"><br> -->
+
             <br>
 
 </form>

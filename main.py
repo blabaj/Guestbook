@@ -4,6 +4,7 @@ import jinja2
 import webapp2
 from models import Guestbook
 import time
+from google.appengine.api import users
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -30,14 +31,37 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
+        user = users.get_current_user()
+
+        if user:
+            logiran = True
+            logout_url = users.create_logout_url('/')
+
+            params = {"logiran": logiran, "logout_url": logout_url, "user": user}
+        else:
+            logiran = False
+            login_url = users.create_login_url('/')
+
+            params = {"logiran": logiran, "login_url": login_url, "user": user}
+
         vnosi = Guestbook.query().fetch()
-        params = {"vnosi":vnosi}
+        params.update({"vnosi":vnosi})
         return self.render_template("gosti.html", params)
     def post(self):
-        ime = self.request.get("ime")
-        if (len(ime) == 0):
-            ime = "Neznanec"
-        email = self.request.get("email")
+
+        user = users.get_current_user()
+        if user:
+            logiran = True
+            logout_url = users.create_logout_url('/')
+
+            params = {"logiran": logiran, "logout_url": logout_url, "user": user}
+        else:
+            logiran = False
+            login_url = users.create_login_url('/')
+
+            params = {"logiran": logiran, "login_url": login_url, "user": user}
+        ime = user.nickname()
+        email = user.email()
         sporocilo = self.request.get("sporocilo")
         if (len(sporocilo) == 0 or len(sporocilo.strip(' ')) == 0):
             napaka = {"napaka":"Vsebina sporocila je potrebna!"}
@@ -46,7 +70,7 @@ class MainHandler(BaseHandler):
         vnos.put()
         #pridobivanje vseh vnosov
         vnosi = Guestbook.query().fetch()
-        params = {"vnosi":vnosi}
+        params.update({"vnosi":vnosi})
         return self.render_template("gosti.html", params)
 
 class VnosHandler(BaseHandler):
